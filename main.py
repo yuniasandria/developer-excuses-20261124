@@ -14,8 +14,11 @@ def main() -> None:
     out_dir = os.environ.get("OUTPUT_DIR", "/output")
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, "entry.txt")
+    # Guard: strip any control character (except tab) so a stray control
+    # character can never leak into the single-line entry.
+    clean = "".join(ch for ch in LINE if ch == "\t" or ord(ch) >= 0x20)
     with open(path, "w", encoding="utf-8", newline="") as f:
-        f.write(LINE)
+        f.write(clean)
 
 
 if __name__ == "__main__":
